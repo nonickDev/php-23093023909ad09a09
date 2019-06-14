@@ -15,6 +15,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('customer', 'CustomerController');
-Route::resource('booking', 'BookingController');
-Route::resource('cleaner', 'CleanerController');
+Auth::routes();
+
+Route::group(['middleware' => ['admin_auth']], function () {
+    Route::group(['prefix' => '/admin'], function () {
+        Route::resource('booking', 'BookingController');
+        Route::resource('customer', 'CustomerController');
+        Route::resource('cleaner', 'CleanerController');
+    });
+});
