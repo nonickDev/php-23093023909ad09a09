@@ -1,0 +1,30 @@
+version: '2'
+services:
+
+  php-cleaning:
+    build: ./docker/php
+    container_name: php-cleaning
+    working_dir: /var/www/html
+    volumes:
+    - .:/var/www/html
+    - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    networks:
+    - app-cleaning
+
+  web-cleaning:
+    image: nginx:alpine
+    container_name: web-cleaning
+    ports:
+    - "8080:80"
+    working_dir: /var/www/html
+    volumes:
+    - .:/var/www/html
+    - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    links:
+    - php-cleaning
+    networks:
+    - app-cleaning
+
+networks:
+  app-cleaning:
+    driver: bridge
